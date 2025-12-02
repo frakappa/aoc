@@ -1,4 +1,3 @@
-import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/string
@@ -7,20 +6,18 @@ pub fn parse(input: String) -> List(#(Int, Int)) {
   input
   |> string.split("\n")
   |> list.filter_map(fn(line) {
-    use <- bool.guard(string.is_empty(line), Error(Nil))
-
-    case string.pop_grapheme(line) {
-      Ok(#(direction, amount)) -> {
-        let direction = case direction {
-          "L" -> -1
-          "R" -> 1
-          _ -> panic
-        }
+    case line {
+      "L" <> amount -> {
         let assert Ok(amount) = int.parse(amount)
 
-        Ok(#(direction, amount))
+        Ok(#(-1, amount))
       }
-      Error(error) -> Error(error)
+      "R" <> amount -> {
+        let assert Ok(amount) = int.parse(amount)
+
+        Ok(#(1, amount))
+      }
+      _ -> Error(Nil)
     }
   })
 }
