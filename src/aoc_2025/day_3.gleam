@@ -63,70 +63,73 @@ pub fn pt_2(input: List(Bank)) {
 fn solve(bank: Bank, remaining: Int, pos: Int, acc: Int) -> Int {
   case remaining {
     0 -> acc
-    _ -> try_digit(9, bank, remaining, pos, acc)
+    _ -> {
+      let l = pos + 1
+      let r = bank.size - remaining
+      let mask =
+        int.bitwise_shift_left(int.bitwise_shift_left(1, r - l + 1) - 1, l)
+
+      try_digit(9, bank, remaining, mask, acc)
+    }
   }
 }
 
-fn try_digit(digit: Int, bank: Bank, remaining: Int, pos: Int, acc: Int) {
-  let l = pos + 1
-  let r = bank.size - remaining
-  let mask = int.bitwise_shift_left(int.bitwise_shift_left(1, r - l + 1) - 1, l)
-
+fn try_digit(digit: Int, bank: Bank, remaining: Int, mask: Int, acc: Int) {
   case digit {
     9 -> {
       let bitboard = int.bitwise_and(bank.nines, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 9)
-        Error(_) -> try_digit(8, bank, remaining, pos, acc)
+        Error(_) -> try_digit(8, bank, remaining, mask, acc)
       }
     }
     8 -> {
       let bitboard = int.bitwise_and(bank.eights, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 8)
-        Error(_) -> try_digit(7, bank, remaining, pos, acc)
+        Error(_) -> try_digit(7, bank, remaining, mask, acc)
       }
     }
     7 -> {
       let bitboard = int.bitwise_and(bank.sevens, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 7)
-        Error(_) -> try_digit(6, bank, remaining, pos, acc)
+        Error(_) -> try_digit(6, bank, remaining, mask, acc)
       }
     }
     6 -> {
       let bitboard = int.bitwise_and(bank.sixes, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 6)
-        Error(_) -> try_digit(5, bank, remaining, pos, acc)
+        Error(_) -> try_digit(5, bank, remaining, mask, acc)
       }
     }
     5 -> {
       let bitboard = int.bitwise_and(bank.fives, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 5)
-        Error(_) -> try_digit(4, bank, remaining, pos, acc)
+        Error(_) -> try_digit(4, bank, remaining, mask, acc)
       }
     }
     4 -> {
       let bitboard = int.bitwise_and(bank.fours, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 4)
-        Error(_) -> try_digit(3, bank, remaining, pos, acc)
+        Error(_) -> try_digit(3, bank, remaining, mask, acc)
       }
     }
     3 -> {
       let bitboard = int.bitwise_and(bank.threes, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 3)
-        Error(_) -> try_digit(2, bank, remaining, pos, acc)
+        Error(_) -> try_digit(2, bank, remaining, mask, acc)
       }
     }
     2 -> {
       let bitboard = int.bitwise_and(bank.twos, mask)
       case get_ls1b(bitboard) {
         Ok(index) -> solve(bank, remaining - 1, index, acc * 10 + 2)
-        Error(_) -> try_digit(1, bank, remaining, pos, acc)
+        Error(_) -> try_digit(1, bank, remaining, mask, acc)
       }
     }
     1 -> {
