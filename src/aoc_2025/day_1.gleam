@@ -3,29 +3,23 @@ import gleam/list
 import gleam/string
 
 pub fn parse(input: String) -> List(#(Int, Int)) {
-  let parsed =
-    input
-    |> string.split("\n")
-    |> list.filter_map(fn(line) {
-      case line {
-        "L" <> amount -> {
-          let assert Ok(amount) = int.parse(amount)
+  input
+  |> string.split("\n")
+  |> list.filter_map(fn(line) {
+    case line {
+      "L" <> amount -> {
+        let assert Ok(amount) = int.parse(amount)
 
-          Ok(#(-1, amount))
-        }
-        "R" <> amount -> {
-          let assert Ok(amount) = int.parse(amount)
-
-          Ok(#(1, amount))
-        }
-        _ -> Error(Nil)
+        Ok(#(-1, amount))
       }
-    })
+      "R" <> amount -> {
+        let assert Ok(amount) = int.parse(amount)
 
-  pt_1(parsed)
-  pt_2(parsed)
-
-  parsed
+        Ok(#(1, amount))
+      }
+      _ -> Error(Nil)
+    }
+  })
 }
 
 pub fn pt_1(input: List(#(Int, Int))) {

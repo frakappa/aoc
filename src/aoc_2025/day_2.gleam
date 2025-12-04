@@ -3,21 +3,15 @@ import gleam/list
 import gleam/string
 
 pub fn parse(input: String) -> List(#(Int, Int)) {
-  let parsed =
-    input
-    |> string.split(",")
-    |> list.map(fn(tup) {
-      let assert Ok(tup) = string.split_once(tup, "-")
-      let assert Ok(a) = int.parse(tup.0)
-      let assert Ok(b) = int.parse(tup.1)
+  input
+  |> string.split(",")
+  |> list.map(fn(tup) {
+    let assert Ok(tup) = string.split_once(tup, "-")
+    let assert Ok(a) = int.parse(tup.0)
+    let assert Ok(b) = int.parse(tup.1)
 
-      #(a, b)
-    })
-
-  pt_1(parsed)
-  pt_2(parsed)
-
-  parsed
+    #(a, b)
+  })
 }
 
 pub fn pt_1(input: List(#(Int, Int))) {
