@@ -4,41 +4,42 @@ import gleam/order
 import gleam/string
 
 pub type Tree {
-  Empty
+  EmptyTree
   Tree(interval: #(Int, Int), max: Int, left: Tree, right: Tree)
 }
 
-fn in_range(tree: Tree, x: Int) -> Bool {
+fn insert(tree: Tree, interval: #(Int, Int)) -> Tree {
   case tree {
-    Empty -> False
+    EmptyTree -> Tree(interval, interval.1, EmptyTree, EmptyTree)
+    Tree(interval: #(l, _), max:, left:, right:) -> {
+      let max = int.max(max, interval.1)
+
+      case interval.0 < l {
+        True -> Tree(..tree, max:, left: insert(left, interval))
+        False -> Tree(..tree, max:, right: insert(right, interval))
+      }
+    }
+  }
+}
+
+fn is_in_range(tree: Tree, x: Int) -> Bool {
+  case tree {
+    EmptyTree -> False
     Tree(interval:, max: _, left:, right:) ->
       case interval.0 <= x && x <= interval.1 {
         True -> True
         False ->
           case left {
             Tree(interval: _, max:, left: _, right: _) if max > x ->
-              in_range(left, x)
+              is_in_range(left, x)
             _ ->
               case right {
                 Tree(interval: _, max: _, left: _, right: _) ->
-                  in_range(right, x)
+                  is_in_range(right, x)
                 _ -> False
               }
           }
       }
-  }
-}
-
-fn insert(tree: Tree, interval: #(Int, Int)) -> Tree {
-  case tree {
-    Empty -> Tree(interval, interval.1, Empty, Empty)
-    Tree(interval: #(l, _), max:, left:, right:) -> {
-      let max = int.max(max, interval.1)
-      case interval.0 < l {
-        True -> Tree(..tree, max:, left: insert(left, interval))
-        False -> Tree(..tree, max:, right: insert(right, interval))
-      }
-    }
   }
 }
 
@@ -76,9 +77,9 @@ pub fn parse(input: String) {
 pub fn pt_1(input: #(List(#(Int, Int)), List(Int))) {
   let #(ranges, ingredients) = input
 
-  let tree = list.fold(ranges, Empty, fn(acc, range) { insert(acc, range) })
+  let tree = list.fold(ranges, EmptyTree, insert)
 
-  list.count(ingredients, fn(ingredient) { in_range(tree, ingredient) })
+  list.count(ingredients, is_in_range(tree, _))
 }
 
 pub fn pt_2(input: #(List(#(Int, Int)), List(Int))) {
@@ -92,7 +93,7 @@ pub fn pt_2(input: #(List(#(Int, Int)), List(Int))) {
       )
     })
 
-  let tup =
+  let acc =
     list.fold(ranges, #(0, -1), fn(acc, range) {
       let #(res, prev) = acc
       let #(l, r) = range
@@ -102,5 +103,5 @@ pub fn pt_2(input: #(List(#(Int, Int)), List(Int))) {
       #(res + int.max(r - l + 1, 0), int.max(prev, r + 1))
     })
 
-  tup.0
+  acc.0
 }
