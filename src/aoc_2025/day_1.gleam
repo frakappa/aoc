@@ -2,24 +2,30 @@ import gleam/int
 import gleam/list
 import gleam/string
 
-pub fn parse(input: String) -> List(#(Int, Int)) {
-  input
-  |> string.split("\n")
-  |> list.filter_map(fn(line) {
-    case line {
-      "L" <> amount -> {
-        let assert Ok(amount) = int.parse(amount)
+pub fn parse(input: String) {
+  let p =
+    input
+    |> string.split("\n")
+    |> list.map(fn(line) {
+      case line {
+        "L" <> amount -> {
+          let assert Ok(amount) = int.parse(amount)
 
-        Ok(#(-1, amount))
-      }
-      "R" <> amount -> {
-        let assert Ok(amount) = int.parse(amount)
+          #(-1, amount)
+        }
+        "R" <> amount -> {
+          let assert Ok(amount) = int.parse(amount)
 
-        Ok(#(1, amount))
+          #(1, amount)
+        }
+        _ -> panic
       }
-      _ -> Error(Nil)
-    }
-  })
+    })
+
+  pt_1(p)
+  pt_2(p)
+
+  p
 }
 
 pub fn pt_1(input: List(#(Int, Int))) {
