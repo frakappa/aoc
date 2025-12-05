@@ -2,22 +2,28 @@ import gleam/int
 import gleam/list
 import gleam/string
 
-pub fn parse(input: String) -> List(#(Int, Int)) {
-  input
-  |> string.split(",")
-  |> list.map(fn(tup) {
-    let assert Ok(tup) = string.split_once(tup, "-")
-    let assert Ok(a) = int.parse(tup.0)
-    let assert Ok(b) = int.parse(tup.1)
+pub fn parse(input: String) {
+  let p =
+    input
+    |> string.split(",")
+    |> list.map(fn(tup) {
+      let assert Ok(tup) = string.split_once(tup, "-")
+      let assert Ok(a) = int.parse(tup.0)
+      let assert Ok(b) = int.parse(tup.1)
 
-    #(a, b)
-  })
+      #(a, b)
+    })
+
+  pt_1(p)
+  pt_2(p)
+
+  p
 }
 
 pub fn pt_1(input: List(#(Int, Int))) {
   input
-  |> list.fold(0, fn(acc, tup) {
-    let #(l, r) = tup
+  |> list.fold(0, fn(acc, range) {
+    let #(l, r) = range
 
     let dl = count_digits(l)
     let dr = count_digits(r)
@@ -55,8 +61,8 @@ pub fn pt_1(input: List(#(Int, Int))) {
 
 pub fn pt_2(input: List(#(Int, Int))) {
   input
-  |> list.fold(0, fn(acc, tup) {
-    let #(l, r) = tup
+  |> list.fold(0, fn(acc, range) {
+    let #(l, r) = range
 
     let llen = count_digits(l)
     let rlen = count_digits(r)
