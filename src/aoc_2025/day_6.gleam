@@ -105,21 +105,6 @@ fn pop_number(string: String) -> #(Int, String) {
   do_pop_number(string, #(0, string))
 }
 
-fn parse_operations(
-  string: String,
-  acc: List(fn(Int, Int) -> Int),
-) -> List(fn(Int, Int) -> Int) {
-  case string.trim_start(string) {
-    "" -> list.reverse(acc)
-    string ->
-      case string.pop_grapheme(string) {
-        Ok(#("+", rest)) -> parse_operations(rest, [int.add, ..acc])
-        Ok(#("*", rest)) -> parse_operations(rest, [int.multiply, ..acc])
-        _ -> panic
-      }
-  }
-}
-
 fn do_pop_number(string: String, acc: #(Int, String)) -> #(Int, String) {
   case string.pop_grapheme(string) {
     Ok(#(grapheme, rest)) ->
@@ -128,5 +113,17 @@ fn do_pop_number(string: String, acc: #(Int, String)) -> #(Int, String) {
         Error(_) -> acc
       }
     Error(_) -> acc
+  }
+}
+
+fn parse_operations(string: String, acc: List(Operation)) -> List(Operation) {
+  case string.trim_start(string) {
+    "" -> list.reverse(acc)
+    string ->
+      case string.pop_grapheme(string) {
+        Ok(#("+", rest)) -> parse_operations(rest, [int.add, ..acc])
+        Ok(#("*", rest)) -> parse_operations(rest, [int.multiply, ..acc])
+        _ -> panic
+      }
   }
 }
