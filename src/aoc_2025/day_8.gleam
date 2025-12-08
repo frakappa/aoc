@@ -1,6 +1,5 @@
 import gleam/bool
 import gleam/dict.{type Dict}
-import gleam/float
 import gleam/int
 import gleam/list
 import gleam/option
@@ -12,15 +11,12 @@ pub type Point {
   Point(x: Int, y: Int, z: Int)
 }
 
-fn get_distance(point_a: Point, point_b: Point) -> Float {
-  let diff_x = int.to_float(point_b.x - point_a.x)
-  let diff_y = int.to_float(point_b.y - point_a.y)
-  let diff_z = int.to_float(point_b.z - point_a.z)
+fn get_distance(point_a: Point, point_b: Point) -> Int {
+  let diff_x = point_b.x - point_a.x
+  let diff_y = point_b.y - point_a.y
+  let diff_z = point_b.z - point_a.z
 
-  let assert Ok(dist) =
-    float.square_root(diff_x *. diff_x +. diff_y *. diff_y +. diff_z *. diff_z)
-
-  dist
+  diff_x * diff_x + diff_y * diff_y + diff_z * diff_z
 }
 
 pub fn parse(input: String) {
@@ -47,7 +43,7 @@ pub fn pt_1(input: List(Point)) {
   input
   |> list.combination_pairs
   |> list.map(fn(pair) { #(pair, get_distance(pair.0, pair.1)) })
-  |> list.sort(fn(a, b) { float.compare(a.1, b.1) })
+  |> list.sort(fn(a, b) { int.compare(a.1, b.1) })
   |> list.fold_until(#(dict.new(), 1000), fn(acc, tup) {
     let #(graph, remaining) = acc
 
@@ -83,7 +79,7 @@ pub fn pt_2(input: List(Point)) {
   input
   |> list.combination_pairs
   |> list.map(fn(pair) { #(pair, get_distance(pair.0, pair.1)) })
-  |> list.sort(fn(a, b) { float.compare(a.1, b.1) })
+  |> list.sort(fn(a, b) { int.compare(a.1, b.1) })
   |> list.fold_until(#(dict.new(), set.new(), 0), fn(acc, tup) {
     let #(graph, connected, _) = acc
     let #(#(point_a, point_b), _) = tup
