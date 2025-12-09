@@ -12,11 +12,11 @@ pub type Point {
 }
 
 fn get_distance(point_a: Point, point_b: Point) -> Int {
-  let diff_x = point_b.x - point_a.x
-  let diff_y = point_b.y - point_a.y
-  let diff_z = point_b.z - point_a.z
+  let dx = point_b.x - point_a.x
+  let dy = point_b.y - point_a.y
+  let dz = point_b.z - point_a.z
 
-  diff_x * diff_x + diff_y * diff_y + diff_z * diff_z
+  dx * dx + dy * dy + dz * dz
 }
 
 pub fn parse(input: String) {
